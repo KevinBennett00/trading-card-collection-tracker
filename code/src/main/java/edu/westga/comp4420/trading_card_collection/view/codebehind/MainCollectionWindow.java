@@ -61,6 +61,7 @@ public class MainCollectionWindow extends BorderPane {
 
 		this.addButton.setOnAction(event -> this.openAddCardWindow());
 		this.detailsButton.setOnAction(event -> this.openCardDetailsWindow());
+		this.editButton.setOnAction(event -> this.openEditCardWindow());
 
 		this.setPadding(new Insets(PADDING));
 		this.setTop(title);
@@ -105,6 +106,13 @@ public class MainCollectionWindow extends BorderPane {
 
 		CardDetailsWindow detailsWindow = new CardDetailsWindow(selectedCard);
 		detailsWindow.showAndWait();
+	}
+
+	private void openEditCardWindow() {
+		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
+
+		EditCardWindow editWindow = new EditCardWindow(this.collection, selectedCard, this::refreshTable);
+		editWindow.showAndWait();
 	}
 
 	private void refreshTable() {

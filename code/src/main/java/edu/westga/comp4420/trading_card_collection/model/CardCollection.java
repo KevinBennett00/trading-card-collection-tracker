@@ -36,9 +36,33 @@ public class CardCollection {
 	}
 
 	/**
+	 * Replaces an existing card with an updated card.
+	 *
+	 * @param currentCard the card currently in the collection
+	 * @param updatedCard the card containing the updated information
+	 * @throws IllegalArgumentException if either card is null or the current card
+	 *                                  is not in the collection
+	 */
+	public void updateCard(Card currentCard, Card updatedCard) {
+		if (currentCard == null) {
+			throw new IllegalArgumentException("Current card cannot be null.");
+		}
+		if (updatedCard == null) {
+			throw new IllegalArgumentException("Updated card cannot be null.");
+		}
+
+		int cardIndex = this.cards.indexOf(currentCard);
+		if (cardIndex < 0) {
+			throw new IllegalArgumentException("Current card is not in the collection.");
+		}
+
+		this.cards.set(cardIndex, updatedCard);
+	}
+
+	/**
 	 * Returns the cards currently in the collection.
 	 *
-	 * @return an copy of the cards
+	 * @return an unmodifiable copy of the cards
 	 */
 	public List<Card> getCards() {
 		return Collections.unmodifiableList(new ArrayList<Card>(this.cards));
