@@ -5,7 +5,10 @@ import edu.westga.comp4420.trading_card_collection.model.CardCollection;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -62,6 +65,7 @@ public class MainCollectionWindow extends BorderPane {
 		this.addButton.setOnAction(event -> this.openAddCardWindow());
 		this.detailsButton.setOnAction(event -> this.openCardDetailsWindow());
 		this.editButton.setOnAction(event -> this.openEditCardWindow());
+		this.removeButton.setOnAction(event -> this.removeSelectedCard());
 
 		this.setPadding(new Insets(PADDING));
 		this.setTop(title);
@@ -111,8 +115,25 @@ public class MainCollectionWindow extends BorderPane {
 	private void openEditCardWindow() {
 		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
 
-		EditCardWindow editWindow = new EditCardWindow(this.collection, selectedCard, this::refreshTable);
-		editWindow.showAndWait();
+		EditCardWindow editCardWindow = new EditCardWindow(this.collection, selectedCard, this::refreshTable);
+		editCardWindow.showAndWait();
+	}
+
+	private void removeSelectedCard() {
+		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
+
+		Alert confirmation = new Alert(AlertType.CONFIRMATION);
+		confirmation.initOwner(this.getScene().getWindow());
+		confirmation.setTitle("Confirm Removal");
+		confirmation.setHeaderText("Remove this card?");
+		confirmation.setContentText("Remove " + selectedCard.getName() + " from the collection?");
+
+		confirmation.showAndWait();
+
+		if (confirmation.getResult() == ButtonType.OK) {
+			this.collection.removeCard(selectedCard);
+			this.refreshTable();
+		}
 	}
 
 	private void refreshTable() {
