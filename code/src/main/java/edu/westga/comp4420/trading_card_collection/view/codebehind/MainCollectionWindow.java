@@ -13,7 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
 /**
- * Displays the cards stored in the user's collection.
+ * Displays the main trading card collection window.
  *
  * @author Kevin Bennett
  * @version Fall 2026
@@ -33,7 +33,7 @@ public class MainCollectionWindow extends BorderPane {
 	/**
 	 * Creates the main collection window.
 	 *
-	 * @param collection the card collection displayed by the window
+	 * @param collection the card collection
 	 */
 	public MainCollectionWindow(CardCollection collection) {
 		this.collection = collection;
@@ -59,35 +59,47 @@ public class MainCollectionWindow extends BorderPane {
 		this.editButton.disableProperty().bind(this.cardTable.getSelectionModel().selectedItemProperty().isNull());
 		this.removeButton.disableProperty().bind(this.cardTable.getSelectionModel().selectedItemProperty().isNull());
 
+		this.addButton.setOnAction(event -> this.openAddCardWindow());
+
 		this.setPadding(new Insets(PADDING));
 		this.setTop(title);
 		this.setCenter(this.cardTable);
 		this.setBottom(buttonBar);
 
 		BorderPane.setAlignment(title, Pos.CENTER);
-		BorderPane.setMargin(title, new Insets(0.0, 0.0, PADDING, 0.0));
-		BorderPane.setMargin(buttonBar, new Insets(PADDING, 0.0, 0.0, 0.0));
+		BorderPane.setMargin(title, new Insets(0, 0, PADDING, 0));
+		BorderPane.setMargin(buttonBar, new Insets(PADDING, 0, 0, 0));
 	}
 
 	private void buildTable() {
 		TableColumn<Card, String> nameColumn = new TableColumn<Card, String>("Name");
-		nameColumn.setCellValueFactory(card -> new ReadOnlyStringWrapper(card.getValue().getName()));
+		nameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
 
 		TableColumn<Card, String> gameColumn = new TableColumn<Card, String>("Game");
-		gameColumn.setCellValueFactory(card -> new ReadOnlyStringWrapper(card.getValue().getGame()));
+		gameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getGame()));
 
 		TableColumn<Card, String> setColumn = new TableColumn<Card, String>("Set");
-		setColumn.setCellValueFactory(card -> new ReadOnlyStringWrapper(card.getValue().getSetName()));
+		setColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getSetName()));
 
-		TableColumn<Card, String> numberColumn = new TableColumn<Card, String>("Card Number");
-		numberColumn.setCellValueFactory(card -> new ReadOnlyStringWrapper(card.getValue().getCardNumber()));
+		TableColumn<Card, String> cardNumberColumn = new TableColumn<Card, String>("Card Number");
+		cardNumberColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCardNumber()));
 
 		this.cardTable.getColumns().add(nameColumn);
 		this.cardTable.getColumns().add(gameColumn);
 		this.cardTable.getColumns().add(setColumn);
-		this.cardTable.getColumns().add(numberColumn);
+		this.cardTable.getColumns().add(cardNumberColumn);
 
 		this.cardTable.setPlaceholder(new Label("No cards have been added yet."));
+
+		this.refreshTable();
+	}
+
+	private void openAddCardWindow() {
+		AddCardWindow addCardWindow = new AddCardWindow(this.collection, this::refreshTable);
+		addCardWindow.showAndWait();
+	}
+
+	private void refreshTable() {
 		this.cardTable.getItems().setAll(this.collection.getCards());
 	}
 }
