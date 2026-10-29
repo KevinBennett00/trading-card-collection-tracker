@@ -1,0 +1,28 @@
+{
+	"name": "account-login-app",
+	"version": "1.0.0",
+	"description": "Login and account creation web application",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js",
+		"test": "jest"
+	},
+	"engines": {
+		"node": "26.7.0",
+		"npm": "11.19.0"
+	},
+	"keywords": [],
+	"author": "Kevin Bennett",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.20.2",
+		"bootstrap": "^4.2.1",
+		"ejs": "^2.6.1",
+		"express": "^4.16.4",
+		"jquery": "^3.3.1",
+		"sqlite3": "^6.0.1"
+	},
+	"devDependencies": {
+		"jest": "30.5.2"
+	}
+}
