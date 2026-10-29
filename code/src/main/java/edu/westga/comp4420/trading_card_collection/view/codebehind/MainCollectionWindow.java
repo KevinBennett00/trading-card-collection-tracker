@@ -1,0 +1,142 @@
+package edu.westga.comp4420.trading_card_collection.view.codebehind;
+
+import edu.westga.comp4420.trading_card_collection.model.Card;
+import edu.westga.comp4420.trading_card_collection.model.CardCollection;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+
+/**
+ * Displays the main trading card collection window.
+ *
+ * @author Kevin Bennett
+ * @version Fall 2026
+ */
+public class MainCollectionWindow extends BorderPane {
+
+	private static final double PADDING = 20.0;
+	private static final double SPACING = 10.0;
+
+	private final CardCollection collection;
+	private final TableView<Card> cardTable;
+	private final Button addButton;
+	private final Button detailsButton;
+	private final Button editButton;
+	private final Button removeButton;
+
+	/**
+	 * Creates the main collection window.
+	 *
+	 * @param collection the card collection
+	 */
+	public MainCollectionWindow(CardCollection collection) {
+		this.collection = collection;
+		this.cardTable = new TableView<Card>();
+		this.addButton = new Button("Add Card");
+		this.detailsButton = new Button("View Details");
+		this.editButton = new Button("Edit Card");
+		this.removeButton = new Button("Remove Card");
+
+		this.buildWindow();
+	}
+
+	private void buildWindow() {
+		Label title = new Label("Trading Card Collection");
+		title.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+
+		this.buildTable();
+
+		HBox buttonBar = new HBox(SPACING, this.addButton, this.detailsButton, this.editButton, this.removeButton);
+		buttonBar.setAlignment(Pos.CENTER);
+
+		this.detailsButton.disableProperty().bind(this.cardTable.getSelectionModel().selectedItemProperty().isNull());
+		this.editButton.disableProperty().bind(this.cardTable.getSelectionModel().selectedItemProperty().isNull());
+		this.removeButton.disableProperty().bind(this.cardTable.getSelectionModel().selectedItemProperty().isNull());
+
+		this.addButton.setOnAction(event -> this.openAddCardWindow());
+		this.detailsButton.setOnAction(event -> this.openCardDetailsWindow());
+		this.editButton.setOnAction(event -> this.openEditCardWindow());
+		this.removeButton.setOnAction(event -> this.removeSelectedCard());
+
+		this.setPadding(new Insets(PADDING));
+		this.setTop(title);
+		this.setCenter(this.cardTable);
+		this.setBottom(buttonBar);
+
+		BorderPane.setAlignment(title, Pos.CENTER);
+		BorderPane.setMargin(title, new Insets(0, 0, PADDING, 0));
+		BorderPane.setMargin(buttonBar, new Insets(PADDING, 0, 0, 0));
+	}
+
+	private void buildTable() {
+		TableColumn<Card, String> nameColumn = new TableColumn<Card, String>("Name");
+		nameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getName()));
+
+		TableColumn<Card, String> gameColumn = new TableColumn<Card, String>("Game");
+		gameColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getGame()));
+
+		TableColumn<Card, String> setColumn = new TableColumn<Card, String>("Set");
+		setColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getSetName()));
+
+		TableColumn<Card, String> cardNumberColumn = new TableColumn<Card, String>("Card Number");
+		cardNumberColumn.setCellValueFactory(cell -> new ReadOnlyStringWrapper(cell.getValue().getCardNumber()));
+
+		this.cardTable.getColumns().add(nameColumn);
+		this.cardTable.getColumns().add(gameColumn);
+		this.cardTable.getColumns().add(setColumn);
+		this.cardTable.getColumns().add(cardNumberColumn);
+
+		this.cardTable.setPlaceholder(new Label("No cards have been added yet."));
+
+		this.refreshTable();
+	}
+
+	private void openAddCardWindow() {
+		AddCardWindow addCardWindow = new AddCardWindow(this.collection, this::refreshTable);
+		addCardWindow.showAndWait();
+	}
+
+	private void openCardDetailsWindow() {
+		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
+
+		CardDetailsWindow detailsWindow = new CardDetailsWindow(selectedCard);
+		detailsWindow.showAndWait();
+	}
+
+	private void openEditCardWindow() {
+		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
+
+		EditCardWindow editCardWindow = new EditCardWindow(this.collection, selectedCard, this::refreshTable);
+		editCardWindow.showAndWait();
+	}
+
+	private void removeSelectedCard() {
+		Card selectedCard = this.cardTable.getSelectionModel().getSelectedItem();
+
+		Alert confirmation = new Alert(AlertType.CONFIRMATION);
+		confirmation.initOwner(this.getScene().getWindow());
+		confirmation.setTitle("Confirm Removal");
+		confirmation.setHeaderText("Remove this card?");
+		confirmation.setContentText("Remove " + selectedCard.getName() + " from the collection?");
+
+		confirmation.showAndWait();
+
+		if (confirmation.getResult() == ButtonType.OK) {
+			this.collection.removeCard(selectedCard);
+			this.refreshTable();
+		}
+	}
+
+	private void refreshTable() {
+		this.cardTable.getItems().setAll(this.collection.getCards());
+	}
+}

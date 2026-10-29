@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Quickstart - Trading Card Collection Tracker</title>
+    <meta name="description" content="Instructions for launching the Trading Card Collection Tracker">
+    <meta name="author" content="Kevin Bennett">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Trading Card Tracker</a>
+
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/documentation">Documentation</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/quickstart">Quickstart</a>
+            </li>
+        </ul>
+    </nav>
+
+    <main class="container mt-4 mb-5">
+        <h1>Quickstart Guide</h1>
+
+        <p>
+            Make sure Java 21 and Maven are installed.
+        </p>
+
+        <ol>
+            <li>
+                Clone or download the project from the
+                <a href="https://github.com/KevinBennett00/trading-card-collection-tracker"
+                   target="_blank">
+                    GitHub repository
+                </a>
+            </li>
+            <li>Open Terminal.</li>
+            <li>Navigate to the repository's "code" folder.</li>
+            <li>
+                Verify the project by running:
+                <pre class="bg-light border p-2"><code>mvn clean verify</code></pre>
+            </li>
+            <li>
+                Launch the JavaFX application by running:
+                <pre class="bg-light border p-2"><code>mvn javafx:run</code></pre>
+            </li>
+            <li>Wait for the Trading Card Collection window to open.</li>
+        </ol>
+
+        <h2>Running Application</h2>
+
+        <img src="/images/application-main.png"
+             class="img-fluid border"
+             alt="Trading Card Collection Tracker running">
+    </main>
+</body>
+</html>
