@@ -44,7 +44,8 @@ app.get('/features/remove-card', function(req, res) {
     res.render('page/features/remove-card');
 });
 
-// Start the web app
-app.listen(8080, function() {
-    console.log('App listening on port 8080!');
+const port = process.env.PORT || 8080;
+
+app.listen(port, function() {
+    console.log('App listening on port ' + port + '!');
 });
